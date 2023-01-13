@@ -1,0 +1,20 @@
+#!/bin/bash
+
+repo=containernetworking/plugins
+
+get_latest_release() {
+  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+    grep '"tag_name":' |                                            # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+}
+
+if [[ -z ${CNI_PLUGINS_VERSION+x} ]]; then
+    $CNI_PLUGINS_VERSION=get_latest_release containernetworking/plugins
+fi
+
+git clone https://github.com/$repo --depth 1 --branch $CNI_PLUGINS_VERSION /tmp/cni-plugins
+
+cd /tmp/cni-plugins
+./build_linux.sh
+mkdir -p /opt/cni/bin
+cp bin/* /opt/cni/bin/

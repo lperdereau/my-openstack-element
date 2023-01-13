@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+set -o xtrace
+
+regexp="^[0-9]+\.[0-9]+$"
+
+if ! [[ $CRI_O_VERSION =~ $regexp ]]; then
+    echo "cri-o version : $CRI_O_VERSION is not a valid version like 1.20" 1&>2
+    exit 1
+fi

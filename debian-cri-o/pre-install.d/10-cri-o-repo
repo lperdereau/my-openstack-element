@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+set -o xtrace
+
+apt-get install -y curl
+
+source /etc/os-release
+
+cat <<EOL > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_${VERSION_ID}/ /
+EOL
+
+cat <<EOL > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable:cri-o:${CRI_O_VERSION}.list
+deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${CRI_O_VERSION}/Debian_${VERSION_ID}/ /
+EOL
+
+curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/${CRI_O_VERSION}/Debian_${VERSION_ID}/Release.key | apt-key add -
+curl -fsSL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_${VERSION_ID}/Release.key | apt-key add -
+
+apt-get update
+
+apt-get clean
+apt-get dist-upgrade -y

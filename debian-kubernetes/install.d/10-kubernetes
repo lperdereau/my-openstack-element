@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+set -o xtrace
+
+base_url="https://dl.k8s.io/release/$KUBERNETES_VERSION/bin/linux/$ARCH"
+
+binaries=( "kubeadm" "kubectl" "kubelet" )
+
+for bin in "${binaries[@]}"; do
+    curl -Lo $bin "$base_url/$bin"
+    curl -Lo $bin.sha256 "$base_url/$bin.sha256"
+    echo "$(<$bin.sha256) $bin" | sha256sum --check
+    rm -f "$bin.sha256"
+    install -o root -g root -m 0755 $bin /usr/bin/$bin
+done
+
+SCRIPTDIR=$(dirname $0)
+
+install -c -g root -o root -m 0644 ${SCRIPTDIR}/kubelet.service /usr/lib/systemd/system/kubelet.service
+install -d -g root -o root -m 0755 /etc/systemd/system/kubelet.service.d/
+install -c -g root -o root -m 0644 ${SCRIPTDIR}/10-kubeadm.conf /etc/systemd/system/kubelet.service.d/
+
+apt-get install -y git
