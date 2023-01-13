@@ -1,12 +1,16 @@
 [Unit]
-Description=Kubernetes Kubelet
-Documentation=https://github.com/GoogleCloudPlatform/kubernetes
+Description=kubelet: The Kubernetes Node Agent
+Documentation=https://kubernetes.io/docs/home/
+Wants=network-online.target
+After=network-online.target
 
 [Service]
-ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests
 ExecStart=/usr/bin/kubelet
-Restart=on-failure
-RestartSec=5
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+StandardOutput=append:/var/log/kubelet/kubelet.log
+StandardError=append:/var/log/kubelet/error.log
 
 [Install]
 WantedBy=multi-user.target

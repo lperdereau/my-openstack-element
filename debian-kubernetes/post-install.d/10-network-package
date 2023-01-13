@@ -1,3 +1,7 @@
 #!/bin/bash
 
-apt-get install -y iptables conntrack ebtables ethtool
+apt-get install -y ethtool=1:5.9* \
+                   ebtables=2.0.11* \
+                   conntrack=1:1.4* \
+                   iptables=1.8* \
+                   nftables=0.9.8*

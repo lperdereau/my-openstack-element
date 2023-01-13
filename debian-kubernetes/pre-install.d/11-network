@@ -5,4 +5,10 @@ set -o xtrace
 
 apt-get install -y procps
 
-sysctl-set-value net.ipv4.ip_forward 1
+SCRIPTDIR=$(dirname $0)
+
+install -c -g root -o root -m 0644 ${SCRIPTDIR}/99-kubernetes-cri.conf  /etc/sysctl.d/99-kubernetes-cri.conf
+
+install -d -g root -o root -m 0755 /etc/modules-load.d/
+
+install -c -g root -o root -m 0644 ${SCRIPTDIR}/kubernetes.conf /etc/modules-load.d/kubernetes.conf
