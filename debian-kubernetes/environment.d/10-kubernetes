@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+set -o xtrace
+
 regexp="^v([0-9]+\.){2}[0-9]$"
 if [[ -z ${KUBERNETES_VERSION+x} ]]; then
     export KUBERNETES_VERSION=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)

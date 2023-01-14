@@ -1,3 +1,8 @@
+#!/bin/bash
+
+set -e
+set -o xtrace
+
 regexp="^([0-9]+\.){2}[0-9]$"
 if ! [[ $DIB_PROMTAIL_VERSION =~ $regexp ]]; then
     echo "Promtail version : $DIB_PROMTAIL_VERSION is not a valid version like 2.7.1" 1&>2
