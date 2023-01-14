@@ -1,0 +1,10 @@
+regexp="^([0-9]+\.){3}$"
+if ! [[ $DIB_PROMTAIL_VERSION =~ $regexp ]]; then
+    echo "Promtail version : $DIB_PROMTAIL_VERSION is not a valid version like 2.7.1" 1&>2
+    exit 1
+fi
+
+if ! [[  $ARCH =~ ^(arm64|amd64)$ ]]; then
+    echo "Arch must be 'amd64' or 'arm64'" 1&>2
+    exit 1
+fi

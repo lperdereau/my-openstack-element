@@ -1,0 +1,2 @@
+groupadd promtail
+useradd --gid promtail -G adm --shell /usr/sbin/nologin --system promtail

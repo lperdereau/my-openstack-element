@@ -1,0 +1,32 @@
+apt-get install -y curl
+
+echo "Prepare promtail config filesystem"
+PROMTAIL_CONFIG_DIR=/etc/promtail
+PROMTAIL_POSITION_DIR=/var/lib/promtail
+PROMTAIL_CONFIG_DIR_SD_DIR="$PROMTAIL_CONFIG_DIR/file_sd"
+
+install -c -g promtail -o promtail -m 0770 $PROMTAIL_CONFIG_DIR
+install -c -g promtail -o promtail -m 0770 $PROMTAIL_POSITION_DIR
+install -c -g promtail -o promtail -m 0770 $PROMTAIL_CONFIG_DIR_SD_DIR
+
+echo "Prepare promtail install filesystem"
+PROMTAIL_INSTALL_DIR=/opt/promtail
+install -c -g promtail -o promtail -m 0770 $PROMTAIL_INSTALL_DIR
+install -c -g promtail -o promtail -m 0770 "$PROMTAIL_INSTALL_DIR/$DIB_PROMTAIL_VERSION"
+
+echo "Download promtail binaries"
+PROMTAIL_DIST_URL="https://github.com/grafana/loki/releases/download/v$DIB_PROMTAIL_VERSION/promtail-linux-$ARCH.zip"
+PROMTAIL_TMP_DIR="/tmp"
+PROMTAIL_ZIP="$PROMTAIL_TMP_DIR/promtail-${DIB_PROMTAIL_VERSION}-linux-$ARCH.zip"
+
+curl -o $PROMTAIL_ZIP $PROMTAIL_DIST_URL
+
+echo "Install promtail"
+
+unzip $PROMTAIL_ZIP -d "$PROMTAIL_INSTALL_DIR/$DIB_PROMTAIL_VERSION/promtail-linux-$ARCH"
+
+ln -s "$PROMTAIL_INSTALL_DIR/$DIB_PROMTAIL_VERSION/promtail-linux-$ARCH" /usr/local/bin/promtail
+
+SCRIPTDIR=$(dirname $0)
+
+install -c -g promtail -o root -m 0644 ${SCRIPTDIR}/promtail.service /usr/lib/systemd/system/promtail.service
